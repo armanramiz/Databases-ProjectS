@@ -1,0 +1,28 @@
+.separator |
+.import users.dat Users
+UPDATE Users SET Location = null WHERE Location = ‘NULL’;
+UPDATE Users SET Country = null WHERE Country = ‘NULL’;
+.import bids.dat Bids
+.import items.dat Items
+UPDATE Items SET Description = null WHERE Description = ‘NULL’;
+UPDATE Items SET Buy_Price = null WHERE Buy_Price = ‘NULL’;
+UPDATE Items SET First_bid = null WHERE First_bid = ‘NULL’;
+.import item_categories.dat Item_Categories
+
+-- query 1
+SELECT COUNT(*) FROM Users;
+-- query 2
+SELECT COUNT(*) FROM Users WHERE Location="New York";
+
+
+-- query 3
+WITH Grouped_Categories AS (SELECT ItemID, COUNT(CategoryName) as count FROM Item_Categories GROUP BY ItemID)
+SELECT COUNT(*) FROM Grouped_Categories WHERE Grouped_Categories.count = 4;
+-- query 4
+SELECT itemID FROM Bids WHERE Amount = (SELECT MAX(Amount) FROM Bids);
+-- query 5
+WITH Sellers AS (Select DISTINCT SellerID FROM Items)
+SELECT COUNT(*) FROM Users, Sellers WHERE Sellers.SellerID = Users.UserID AND Users.Rating > 1000;
+-- query 6
+WITH Sellers AS (SELECT DISTINCT SellerID AS ID FROM Items)
+SELECT COUNT(*) FROM Bids, Sellers WHERE Bids.BidderID = Sellers.ID;
